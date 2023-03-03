@@ -1,69 +1,132 @@
 # Índice
-- [Criando sua VPC](#criando-sua-vpc)
-- [Criando seu grupo de segurança](#configurando-seu-grupo-de-segurança)
-- [Criando seu par de chaves pública e privada](#criando-seu-par-de-chaves-pública-e-privada)
-- [Criando sua primeira instância](#criando-sua-primeira-instância)
-- [Criando seu Ip elástico](#criando-seu-ip-elástico)
-# Criando sua vpc
+- [Criando um gateway para internet](#criando-um-gateway-para-internet)
+- [Alterando tabela de rotas](#alterando-tabela-de-rotas)
+- [Criando um grupo de Segurança para o Balanceador de Carga](#criando-um-grupo-de-segurança-para-o-balanceador-de-carga)
+- [Alterando o grupo de Segurança default](#alterando-o-grupo-de-segurança-default)
+- [Criando o grupo de Destino](#criando-o-grupo-de-destino)
+- [Criando o Balanceador de Carga](#criando-o-balanceador-de-carga)
+- [Criando uma Instância](#criando-uma-instância)
+# Criando um gateway para internet
 ------------
 1.Faça login na sua conta da AWS em [Amazon AWS](https://aws.amazon.com).</br>
 2.Acesse a opção VPC [no console da AWS](https://console.aws.amazon.com/vpc/).</br>
-3.Clique em Criar VPC.</br>
-4.Em configurações de VPC seleciona Somente VPC.</br>
+3.Acesse a opção de Gateways da Internet no menu lateral esquerdo.</br>
+4.Clique em Criar gateway da Internet.</br>
 5.Preencha com as seguintes informações:
 <dl>
   <dt>Tag de Nome</dt>
-  <dd><code>VPC-AtividadePratica-01</code></dd>
-  
-  <dt>Bloco CIDR IPv4</dt>
-  <dd><code>172.31.0.0/16</code></dd>
-
-  <dt>Bloco CIDR IPv6</dt>
-  <dd><code>Nenhum bloco CIDR IPv6</code></dd>
-  
-  <dt>Locação</dt>
-  <dd><code>Padrão</code></dd>
+  <dd><code>my-internet-gateway</code></dd>
 </dl>
-6.Clique em criar VPC
+6.Clique em criar Cria gateway
 
-# Configurando seu grupo de segurança
+# Alterando tabela de rotas
 ------------
-1.Acesse a opção EC2 no [console da AWS](https://console.aws.amazon.com/ec2/).</br>
+1.Acesse a opção VPC [no console da AWS](https://console.aws.amazon.com/vpc/).</br>
 2.Clique em Security Group.</br>
-4.Clique no  grupo de segurança desejado</br>
-5.Adicione uma tag de nome ao grupo default :
+3.Acesse a opção de Tabelas de Rotas no menu lateral esquerdo.</br>
+4.Selecione a tabela de rotas relacionada a Sub-rede privada A.
+5.Clique em Ações em seguida em Editar rotas.</br>
+6.Adicione a seguinte entrada na tabela de rotas:
 <dl>
-  <dt>Nome do grupo de segurança</dt>
-  <dd><code>SG-AtividadePratica-01</code></dd>
+  <dt>Destino</dt>
+  <dd><code>0.0.0.0/0</code></dd>
+  <dt>Alvo</dt>
+  <dd><code>Internet Gateway criado anteriormente</code></dd>
 </dl>
-6.Clique em Editar regras de entrada</br>
-7.Adicione as seguintes informações:
-<img src="https://user-images.githubusercontent.com/54165905/214590529-5a23468e-be0d-4da3-a4c1-370e34afda41.png">
-8.Clique em salvar regras
+7.Clique em Salvar alterações</br>
 
-# Criando seu par de chaves pública e privada
+# Criando um grupo de Segurança para o Balanceador de Carga
 ------------
 1.Acesse a opção EC2 no [console da AWS](https://console.aws.amazon.com/ec2/).</br>
-2.CLique em Pares de chaves.</br>
-3.Clique em criar par de chaves.</br>
+2.CLique em Security Groups no menu lateral esquerdo.</br>
+3.Clique em Criar grupo de segurança.</br>
 4.Preencha as seguintes informações:
 <dl>
-  <dt>Nome</dt>
-  <dd><code>atividade-key</code></dd>
+  <dt>Nome do grupo de segurança</dt>
+  <dd><code>SG-Load-Balancer</code></dd>
   
-  <dt>Tipo de Par de chave</dt>
-  <dd><code>RSA</code></dd>
+  <dt>Descrição</dt>
+  <dd><code>Grupo de seguranca do load balancer</code></dd>
 
-  <dt>Formato de arquivo de chave privada</dt>
-  <dd><code>.pem</code></dd>
+  <dt>VPC</dt>
+  <dd><code>Selecione uma VPC existente</code></dd>
 </dl>
-5.Clique em criar criar par de chaves
+5.Adicione as seguintes regras de entradas:
 
-# Criando sua primeira instância
+| Name | ID da regra do Grupo de Segurança | Versão do IP | Tipo | Protocolo | Intervalo de portas | Origem | Descrição          |
+|------|-----------------------------------|--------------|------|-----------|---------------------|--------|--------------------|
+| | | IPv4         | HTTP              | TCP       | 80                  | 0.0.0.0/0      | Permite conexao HTTP na porta 80   |
+
+# Alterando o grupo de Segurança default
 -----------
 1.Acesse a opção EC2 no [console da AWS](https://console.aws.amazon.com/ec2/).</br>
-2.Clique em Executar Instâncias</br>
-3.Preencha as informações:
+2.CLique em Security Groups no menu lateral esquerdo.</br>
+3.Selecione o grupo de segurança default.
+4.Clique em Editar regras de entrada.
+5.Preencha as informações:
+| Name | ID da regra do Grupo de Segurança | Versão do IP | Tipo | Protocolo | Intervalo de portas | Origem | Descrição          |
+|------|-----------------------------------|--------------|------|-----------|---------------------|--------|--------------------|
+| | | IPv4         | SSH              | TCP       | 22                  | Seu IP aqui    | Permite conexao HTTP na porta 80   |
+| | | IPv4         | NFS              | TCP       | 2049                | SG do grupo de segurança default     | Permite conexao HTTP na porta 80   |
+| | | IPv4         | HTTP              | TCP       | 80                  | SG do grupo de segurança do load balancer    | Permite conexao HTTP na porta 80   |
+
+6.Clique em Salvar regras
+
+# Criando o grupo de Destino
+------------
+1.Acesse a opção EC2 no [console da AWS](https://console.aws.amazon.com/ec2/).</br>
+2.Acesse a opção de Grupos de destino no menu lateral esquerdo.
+3.Clique em Create target group.
+4.Preencha as seguinte informações:
+<dl>
+  <dt>Escolha um tipo de destino type</dt>
+  <dd><code>Instâncias</code></dd>
+  
+  <dt>Nome do grupo de destino</dt>
+  <dd><code>Nome que desejar</code></dd>
+
+  <dt>Selecionar VPC</dt>
+  <dd><code>Selecione a VPC existente</code></dd>
+  
+  <dt>Configurações avançadas de verificação de integridade</dt>
+  <dd><code>Código de Sucesso:200,302</code></dd>
+</dl>
+5.Clique em Próximo.</br>
+6.Clique em Criar grupo de destino.</br>
+
+# Criando o Balanceador de Carga
+------------
+1.Acesse a opção EC2 no [console da AWS](https://console.aws.amazon.com/ec2/).</br>
+2.Clique em Executar instância.
+3.Clique em Create load balancer.
+4.Selecione Application Load Balancer e Criar
+5.Preencha as seguinte informações:
+<dl>
+  <dt>Nome do balanceador de cargatype</dt>
+  <dd><code>Nome que desejar.</code></dd>
+  
+  <dt>Esquema</dt>
+  <dd><code>Voltado para internet.</code></dd>
+
+  <dt>Selecionar VPC</dt>
+  <dd><code>Selecione a VPC existente.</code></dd>
+  
+  <dt>Mapeamento</dt>
+  <dd><code>Zona de disponibilidade:us-east-1a (use1-az2).</code></dd>
+  
+  <dt>Grupo de segurança</dt>
+  <dd><code>Selecione o grupo de segurança criado para o balanceador de carga.</code></dd>
+  
+  <dt>Listeners</dt>
+  <dd><code>Protocol:HTTP; Porta:80; Ação Padrão: Grupo de destino criado</code></dd>
+</dl>
+6.Clique em criar balanceador de carga
+
+# Criando uma Instância
+------------
+1.Acesse a opção EC2 no [console da AWS](https://console.aws.amazon.com/ec2/).</br>
+2.Clique em Executar instâncias.
+3.Preencha as seguintes informações:</br>
 <dl>
   <dt>Nomes e Tags</dt>
   <dd><code>Name:Seunome Project:PB CosCenter:PBCompass</code></dd>
@@ -71,49 +134,19 @@
   <dt>Imagem da máquina da Amazon</dt>
   <dd><code>Amazon Linux</code></dd>
 
-  
   <dt>Tipo de Instância</dt>
   <dd><code>t3.small</code></dd>
    
   <dt>Key pair</dt>
   <dd><code>atividade-key</code></dd>
    
-  <dt>Configuração de rede</dt>
-  <dd><code>Selecionar grupo de segurança existente</code></dd>
+  <dt>Configuração de rede-Editar</dt>
+  <dd><code>VPC:Escolha a VPC existente; Sub-rede:Selecione a sub-rede privada A; Firewall:Selecionar o grupo de segurança default</code></dd>
    
   <dt>Configuração de Armazenamento</dt>
-  <dd><code>1x 16gb GIB gp2</code></dd></br>
-  4.Clique em Executar Instância</br>
-
-
-# Criando seu Ip elástico
-------------
-1.Acesse a opção EC2 no [console da AWS](https://console.aws.amazon.com/ec2/).</br>
-2.Clique em IPs Elásticos
-3.Alocar endereço Ip elástico
-4.Preencha as seguinte informações:
-<dl>
-  <dt>Grupo de Borda de Rede</dt>
-  <dd><code>us-east1</code></dd>
+  <dd><code>1x 16gb GiB gp2</code></dd></br>
   
-  <dt>Conjunto de endereços IPv4 públicos</dt>
-  <dd><code>Conjunto de endereços IPv4 da Amazon</code></dd>
-
-  <dt>Tags opcional</dt>
-  <dd><code>Project:PB CosCenter:PB</code></dd>
-</dl>
-5.Clique em ALocar.</br>
-6.Selecione o IP elástico, clique em ações e associar o enderço IP elástico.</br>
-7.Preencha as seguinte informações:
-<dl>
-  <dt>Tipo de Recurso</dt>
-  <dd><code>Instância</code></dd>
+  </dl>
+  4.Acesse a aba de Detalhes avançados.</br>
   
-  <dt>Instância</dt>
-  <dd><code>Selecione a instância desejada</code></dd>
-
-  <dt>Endereço Privado</dt>
-  <dd><code>Selecione o ip privado relacionado a instância</code></dd>
-</dl>
-8.Clique em associar.
-
+  5.Vá a área de Dados do usuário e copie o conteúdo `user_data.sh`(substitua o texto DNS_LB na linha 17 pelo DNS do LoadBalancer) para dentro do campo em branco.Esse script será responsável por fazer todas as configurações básicas da instância, incluindo instalação do `Docker` e `Docker Compose` e a montagem do sistema de arquivos `EFS`, ela também iniciará os containers contendo `WordPress` e `MySQL`.
