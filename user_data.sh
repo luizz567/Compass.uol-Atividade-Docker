@@ -13,4 +13,4 @@ cd Compass.uol-Atividade-Docker
 mkdir --parents /nfs/
 cat etc/fstab >> /etc/fstab
 mount -a
-docker compose up --detachS
+docker compose up --detach
