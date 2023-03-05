@@ -13,4 +13,5 @@ cd Compass.uol-Atividade-Docker
 mkdir --parents /nfs/
 cat etc/fstab >> /etc/fstab
 mount -a
+sed --in-place 's/ENDERECO_DO_LB/ENDERECO_DO_LB_ATUAL/g' docker-compose.yml
 docker compose up --detach
