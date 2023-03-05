@@ -13,6 +13,7 @@ services:
       mysql:
         condition: service_healthy
     environment:
+      WORDPRESS_SITEURL: http://ENDERECO_DO_LB
       WORDPRESS_DB_HOST: mysql
       WORDPRESS_DB_USER: luiz
       WORDPRESS_DB_PASSWORD: fa9sd84f98ga
@@ -21,6 +22,7 @@ services:
       - wordpress
     volumes:
       - /nfs/LuizGustavo/wordpress:/var/www/html
+      - ./nfs/LuizGustavo/wordpress/wp-config.php:/var/www/html/wp-config.php
   mysql:
     image: mysql
     restart: always
