@@ -149,4 +149,13 @@
   </dl>
   4.Acesse a aba de Detalhes avançados.</br>
   
-  5.Vá a área de Dados do usuário e copie o conteúdo `user_data.sh`(substitua o texto DNS_LB na linha 17 pelo DNS do LoadBalancer) para dentro do campo em branco.Esse script será responsável por fazer todas as configurações básicas da instância, incluindo instalação do `Docker` e `Docker Compose` e a montagem do sistema de arquivos `EFS`, ela também iniciará os containers contendo `WordPress` e `MySQL`.
+  5.Vá a área de Dados do usuário e copie o conteúdo `user_data.sh`para dentro do campo em branco.Esse script será responsável por fazer todas as configurações básicas da instância, incluindo instalação do `Docker` e `Docker Compose` e a montagem do sistema de arquivos `EFS`, ela também iniciará os containers contendo `WordPress` e `MySQL`.
+
+## Para realizar alteração da URL do WordPress, siga esses passos:
+1.Acesse a opção EC2 no [console da AWS](https://console.aws.amazon.com/ec2/).</br>
+2.Clique em Load balancers no menu lateral esquerdo.</br>
+3.Copie o endereço do Load balancer desejado.</br>
+4.Acesse o [wp-config.php](https://github.com/luizz567/Compass.uol-Atividade-Docker/tree/main/nfs/LuizGustavo/wordpress) do seu wordpress e adicione as novas variáveis de ambiente, que serão responsáveis pela troca do URL do site, depois disso salve o arquivo.</br>
+5.Acesse o [docker-compose.yml](https://github.com/luizz567/Compass.uol-Atividade-Docker/blob/main/docker-compose.yml) e adicione o seu novo LoadBalancer a variável de ambiente referente ao url do WordPress, depois disso salve o arquivo.</br>
+6.Suba os containers novamente com o novo endereço do WordPress.
+
