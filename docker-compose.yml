@@ -13,7 +13,7 @@ services:
       mysql:
         condition: service_healthy
     environment:
-      WORDPRESS_SITEURL: http://ENDERECO_DO_LB
+      WORDPRESS_SITEURL: http://Atv-Docker-1523694975.us-east-1.elb.amazonaws.com
       WORDPRESS_DB_HOST: mysql
       WORDPRESS_DB_USER: luiz
       WORDPRESS_DB_PASSWORD: fa9sd84f98ga
