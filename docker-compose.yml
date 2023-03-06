@@ -22,7 +22,6 @@ services:
       - wordpress
     volumes:
       - /nfs/LuizGustavo/wordpress:/var/www/html
-      - ./nfs/LuizGustavo/wordpress/wp-config.php:/var/www/html/wp-config.php
   mysql:
     image: mysql
     restart: always
