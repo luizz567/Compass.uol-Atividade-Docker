@@ -155,7 +155,7 @@
 1.Acesse a opção EC2 no [console da AWS](https://console.aws.amazon.com/ec2/).</br>
 2.Clique em Load balancers no menu lateral esquerdo.</br>
 3.Copie o endereço do Load balancer desejado.</br>
-4.Acesse o [wp-config.php](https://github.com/luizz567/Compass.uol-Atividade-Docker/tree/main/nfs/LuizGustavo/wordpress) do seu wordpress e adicione as novas variáveis de ambiente, que serão responsáveis pela troca do URL do site, depois disso salve o arquivo.</br>
-5.Acesse o [docker-compose.yml](https://github.com/luizz567/Compass.uol-Atividade-Docker/blob/main/docker-compose.yml) e adicione o seu novo LoadBalancer a variável de ambiente referente ao url do WordPress, depois disso salve o arquivo.</br>
+4.Acesse o [wp-config.php](https://github.com/luizz567/Compass.uol-Atividade-Docker/tree/main/nfs/LuizGustavo/wordpress) do seu wordpress e adicione as novas variáveis de ambiente(linhas 54,55), que serão responsáveis pela troca do URL do site, depois disso salve o arquivo.</br>
+5.Acesse o [docker-compose.yml](https://github.com/luizz567/Compass.uol-Atividade-Docker/blob/main/docker-compose.yml) e adicione o seu novo LoadBalancer a variável de ambiente referente ao url do WordPress(linha 16), depois disso salve o arquivo.</br>
 6.Suba os containers novamente com o novo endereço do WordPress.
 
